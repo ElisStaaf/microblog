@@ -1,0 +1,41 @@
+// -*- closure-template-html -*-
+
+{namespace ublog.theme.mirev.tmpl}
+
+{template tagsPage}
+    {call ublogHtmlPage data="all"}
+        {param title: $blogName + ': Tags' /}
+
+        {param content}
+            <h1>Tags</h1>
+
+            <div class="tag-cloud">
+                {foreach $tag in $tags}
+                    {sp}<a href="{$tag.href}">{$tag.name}</a>
+                {/foreach}
+            </div>
+        {/param}
+    {/call}
+{/template}
+
+{template postWithTagPage}
+    {call ublogHtmlPage data="all"}
+        {param title: $blogName + ': ' + $tag /}
+
+        {param addHead}
+            <link rel="alternate" type="application/rss+xml"
+                  title="All articles, tagged with “{$tag}”"
+                  href="{$atomFeedHref}" />
+        {/param}
+        
+        {param content}
+            <h1><a href="{$atomFeedHref}" class="bigfeed">All articles, tagged with “{$tag}”</a></h1>
+
+            {foreach $post in $posts}
+                {call show-blog-post data="$post" /}
+            {/foreach}
+
+            {call navigation data="$navigation" /}
+        {/param}
+    {/call}
+{/template}

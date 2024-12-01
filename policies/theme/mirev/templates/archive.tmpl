@@ -1,0 +1,55 @@
+// -*- closure-template-html -*-
+
+{namespace ublog.theme.mirev.tmpl}
+
+{template archiveForYear}
+    {call ublogHtmlPage data="all"}
+        {param title}
+            {nil}{$blogName}: {$year}
+        {/param}
+
+        {param content}
+            <h1>Archive for {$year}</h1>
+            
+            {foreach $month in $months}
+                <div>
+                    <a href="{$month.href}">Archive for {$month.title}, {$year}</a>
+                </div>
+            {/foreach}
+        {/param}
+    {/call}    
+    
+{/template}
+
+{template archiveForMonth}
+    {call ublogHtmlPage data="all"}
+        {param title}
+            {nil}{$blogName}: {$month}, {$year}
+        {/param}
+
+        {param content}
+            <h1>Archive for {$month}, {$year}</h1>
+            
+            {foreach $post in $posts}
+                {call show-blog-post data="$post" /}
+            {/foreach}
+        {/param}
+    {/call}    
+{/template}
+
+{template archiveForDay}
+    {call ublogHtmlPage data="all"}
+        {param title}
+            {nil}{$blogName}: {$day} {$month}, {$year}
+        {/param}
+
+        {param content}
+            <h1>Archive for {$day} {$month}, {$year}</h1>
+            
+            {foreach $post in $posts}
+                {call show-blog-post data="$post" /}
+            {/foreach}
+        {/param}
+    {/call}
+    
+{/template}
