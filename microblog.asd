@@ -7,7 +7,7 @@
   :serial t
   :components ((:file "defmodules")
                (:closure-template "feed")
-               (:file "arblog")
+               (:file "microblog")
                (:file "public")
                (:file "admin")
                (:file "static")))
