@@ -1,2 +1,2 @@
-# ublog
-µBlog: A miniscule blogging engine written almost entirely in common lisp!
+# MicroBlog
+MicroBlog: A miniscule blogging engine written almost entirely in common lisp!
