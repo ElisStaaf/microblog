@@ -19,10 +19,10 @@
   (ublog:*blog-name* "My blog")
   (ublog:*posts-on-page* 10)
   
-  (ublog.internal.datastore:*datastore* (make-instance 'ublog.datastore.mongodb:arblog-mongo-datastore))
-  (ublog.internal.markup:*markup* (make-instance 'ublog.markup.rst:arblog-rst-markup))
-  ;;(ublog.policy.markup:*markup* (make-instance 'ublog.markup.markdown:arblog-markdown-markup))
-  (ublog.internal.theme:*theme* (make-instance 'ublog.theme.mirev:arblog-mirev-theme))
+  (ublog.internal.datastore:*datastore* (make-instance 'ublog.datastore.mongodb:ublog-mongo-datastore))
+  (ublog.internal.markup:*markup* (make-instance 'ublog.markup.rst:ublog-rst-markup))
+  ;;(ublog.policy.markup:*markup* (make-instance 'ublog.markup.markdown:ublog-markdown-markup))
+  (ublog.internal.theme:*theme* (make-instance 'ublog.theme.mirev:ublog-mirev-theme))
   
   (ublog:*disqus-enabled* nil))
 
