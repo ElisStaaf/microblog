@@ -2,17 +2,17 @@
 
 (require :asdf)
 
-(asdf:operate 'asdf:load-op 'closure-template)
+(asdf:operate 'asdf:load-op '#:closure-template)
 
 (defsystem #:microblog
-  :defsystem-depends-on (closure-template)
+  :defsystem-depends-on (#:closure-template)
   :depends-on (restas
                local-time 
-               closure-template)
+               #:closure-template)
   :pathname "core/"
   :serial t
   :components ((:file "defmodules")
-               (closure-template "feed")
+               (#:closure-template "feed")
                (:file "microblog")
                (:file "public")
                (:file "admin")
