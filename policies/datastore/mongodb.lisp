@@ -48,6 +48,17 @@
             (setf (gethash field fields-query) 1)))
     fields-query))
 
+(defmethod datastore-list-recent-posts ((datastore microblog-mongo-datastore) skip limit &key tag fields)
+  (with-posts-collection (posts datastore)
+    (mongo:find-list posts
+                     :query (son "$query" (if tag
+                                              (make-query datastore "tags" tag)
+                                              (make-query datastore))
+                                 "$orderby" (son "published" -1))
+                     :limit limit
+                     :skip skip
+                     :fields (list-fields-query fields))))
+
 (defmethod datastore-count-posts ((datastore microblog-mongo-datastore) &optional tag)
   (with-posts-collection (posts datastore)
     (mongo:$count posts
