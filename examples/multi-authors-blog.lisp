@@ -35,8 +35,8 @@
    author
    password))
 
-(add-author "ivanov" "111")
-(add-author "petrov" "222")
+(add-author "John Doe" "111")
+(add-author "Jane Doe" "222")
 
 ;;;; settings
 
