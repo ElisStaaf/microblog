@@ -5,13 +5,21 @@ possible while still being easy to use (if you know CLisp, no way to avoid that)
 MicroBlog was mostly written for me to learn CLisp, but it's actually a pretty
 useful tool if you want to write a blog.
 
+## Requirements
+* A CLisp compiler (SBCL recommended)
+* ASDF
+* [Others](/microblog.asd)
+
 ## Install
 ```sh
 git clone https://github.com/ElisStaaf/microblog
+./install # Assuming that your ASDF directory is "$HOME/common-lisp"
 ```
 
 ## Examples
 ```lisp
+(require :asdf)
+
 (asdf:operate 'asdf:load-op '#:microblog)
 (asdf:operate 'asdf:load-op '#:microblog-systems)
 
