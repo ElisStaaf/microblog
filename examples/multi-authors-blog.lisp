@@ -1,5 +1,7 @@
 ;;;; demo.lisp
 
+(require :asdf)
+
 (asdf:operate 'asdf:load-op '#:microblog)
 (asdf:operate 'asdf:load-op '#:microblog-systems)
 

@@ -1,5 +1,7 @@
 ;;;; simple.lisp
 
+(require :asdf)
+
 (asdf:operate 'asdf:load-op '#:microblog)
 (asdf:operate 'asdf:load-op '#:microblog-systems)
 
@@ -19,10 +21,10 @@
   (microblog:*blog-name* "My blog")
   (microblog:*posts-on-page* 10)
   
-  (microblog.internal.datastore:*datastore* (make-instance 'microblog.datastore.mongodb:microblog-mongo-datastore))
-  (microblog.internal.markup:*markup* (make-instance 'microblog.markup.rst:microblog-rst-markup))
-  ;;(microblog.policy.markup:*markup* (make-instance 'microblog.markup.markdown:microblog-markdown-markup))
-  (microblog.internal.theme:*theme* (make-instance 'microblog.theme.mirev:microblog-mirev-theme))
+  (microblog.internal.datastore:*datastore* (make-instance '#:microblog.datastore.mongodb:microblog-mongo-datastore))
+  (microblog.internal.markup:*markup* (make-instance '#:microblog.markup.rst:microblog-rst-markup))
+  ;;(microblog.policy.markup:*markup* (make-instance '#:microblog.markup.markdown:microblog-markdown-markup))
+  (microblog.internal.theme:*theme* (make-instance '#:microblog.theme.mirev:microblog-mirev-theme))
   
   (microblog:*disqus-enabled* nil))
 
