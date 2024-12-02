@@ -9,4 +9,4 @@ mklib() {
 
 mklib \
     "ElisStaaf/microblog" \
-    "$CLISP_DIR/microblog"
+    "$HOME/common-lisp/microblog"
