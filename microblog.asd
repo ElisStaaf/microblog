@@ -2,6 +2,8 @@
 
 (require :asdf)
 
+(asdf:operate 'asdf:load-op ':closure-template)
+
 (defsystem #:microblog
   :defsystem-depends-on (closure-template)
   :depends-on (restas
