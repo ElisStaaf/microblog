@@ -17,12 +17,6 @@
  (merge-pathnames "static/" (asdf:component-pathname  (asdf:find-system '#:microblog-theme-isimple))))
 
 
-(defun recent-posts-widget ()
-  (iter (for item in (microblog.internal.datastore:ds.list-recent-posts 0 10 :fields '("title")))
-        (collect
-            (list :title (gethash "title" item)
-                  :url (restas:genurl 'microblog.public::post-permalink :id (gethash "_id" item))))))
-
 (defun tags-widget ()
   (let ((tags (microblog.internal.datastore:ds.all-tags)))
     (iter (for tag in (sort (copy-list tags) #'string< :key #'string-downcase))
@@ -87,13 +81,6 @@
                                 :href (restas:genurl 'microblog.public::posts-with-tag :tag tag))))
           :published (local-time:format-rfc1123-timestring nil published))))
 
-
-(define-isimple-method theme-list-recent-posts (posts navigation)
-  (render-template show-all-blog-post
-    (list :posts (mapcar 'prepare-post-data posts)
-          :disqus (list :enabled microblog:*disqus-enabled*
-                        :shortname microblog:*disqus-shortname*)
-          :navigation navigation)))
 
 (define-isimple-method theme-archive-for-year (year months)
   (render-template archive-for-year

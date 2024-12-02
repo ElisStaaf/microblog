@@ -53,17 +53,6 @@
     (mongo:$count posts
                   (and tag (make-query datastore "tags" tag)))))
 
-(defmethod datastore-list-recent-posts ((datastore microblog-mongo-datastore) skip limit &key tag fields)
-  (with-posts-collection (posts datastore)
-    (mongo:find-list posts
-                     :query (son "$query" (if tag
-                                              (make-query datastore "tags" tag)
-                                              (make-query datastore))
-                                 "$orderby" (son "published" -1))
-                     :limit limit
-                     :skip skip
-                     :fields (list-fields-query fields))))
-  
 (defmethod datastore-find-single-post ((datastore microblog-mongo-datastore) year month day urlname)
   (let* ((min (local-time:encode-timestamp 0 0 0 0 day month year))
          (max (local-time:adjust-timestamp min (offset :day 1))))
