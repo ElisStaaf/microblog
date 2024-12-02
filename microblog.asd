@@ -1,5 +1,11 @@
 ;;;; microblog.asd
 
+(require :ql)
+
+(ql:quickload "closure-template")
+(ql:quickload "restas")
+(ql:quickload "local-time")
+
 (defsystem #:microblog
   :defsystem-depends-on (#:closure-template)
   :depends-on (#:restas #:local-time)
