@@ -1,17 +1,17 @@
 ;;;; mongodb.lisp
 
-(defpackage #:ublog.datastore.mongodb
-  (:use #:cl #:iter #:mongo.sugar #:ublog.policy.datastore)
-  (:export #:ublog-mongo-datastore #:make-query))
+(defpackage #:microblog.datastore.mongodb
+  (:use #:cl #:iter #:mongo.sugar #:microblog.policy.datastore)
+  (:export #:microblog-mongo-datastore #:make-query))
 
-(in-package #:ublog.datastore.mongodb)
+(in-package #:microblog.datastore.mongodb)
 
 (defgeneric make-query (datastore &rest args))
 
-(defclass ublog-mongo-datastore ()
+(defclass microblog-mongo-datastore ()
   ((dbspec :initarg :dbspec :initform '(:name "blog") :reader dbspec)))
 
-(defmethod make-query ((datastore ublog-mongo-datastore) &rest args)
+(defmethod make-query ((datastore microblog-mongo-datastore) &rest args)
   (apply #'son args))
 
 (defmacro with-mongodb ((db datastore) &body body)
@@ -48,12 +48,12 @@
             (setf (gethash field fields-query) 1)))
     fields-query))
 
-(defmethod datastore-count-posts ((datastore ublog-mongo-datastore) &optional tag)
+(defmethod datastore-count-posts ((datastore microblog-mongo-datastore) &optional tag)
   (with-posts-collection (posts datastore)
     (mongo:$count posts
                   (and tag (make-query datastore "tags" tag)))))
 
-(defmethod datastore-list-recent-posts ((datastore ublog-mongo-datastore) skip limit &key tag fields)
+(defmethod datastore-list-recent-posts ((datastore microblog-mongo-datastore) skip limit &key tag fields)
   (with-posts-collection (posts datastore)
     (mongo:find-list posts
                      :query (son "$query" (if tag
@@ -64,7 +64,7 @@
                      :skip skip
                      :fields (list-fields-query fields))))
   
-(defmethod datastore-find-single-post ((datastore ublog-mongo-datastore) year month day urlname)
+(defmethod datastore-find-single-post ((datastore microblog-mongo-datastore) year month day urlname)
   (let* ((min (local-time:encode-timestamp 0 0 0 0 day month year))
          (max (local-time:adjust-timestamp min (offset :day 1))))
     (with-posts-collection (posts datastore)
@@ -73,14 +73,14 @@
                                          "published" (son "$gte" min "$lt" max)
                                          "urlname" urlname)))))
 
-(defmethod datastore-get-single-post ((datastore ublog-mongo-datastore) id &key fields)
+(defmethod datastore-get-single-post ((datastore microblog-mongo-datastore) id &key fields)
   (with-posts-collection (posts datastore)
     (mongo:find-one posts
                     :query (make-query datastore "_id" id)
                     :selector (list-fields-query fields))))
   
 
-(defmethod datastore-list-archive-posts ((datastore ublog-mongo-datastore) min max &optional fields)
+(defmethod datastore-list-archive-posts ((datastore microblog-mongo-datastore) min max &optional fields)
   (let ((fields-query (list-fields-query fields)))
     (with-posts-collection (posts datastore)
       (mongo:find-list posts
@@ -89,17 +89,17 @@
                                    "$orderby" (son "published" -1))
                        :fields fields-query))))
 
-(defmethod datastore-all-tags ((datastore ublog-mongo-datastore))
+(defmethod datastore-all-tags ((datastore microblog-mongo-datastore))
   (with-posts-collection (posts datastore)
     (mongo:$distinct posts "tags")))
 
-(defmethod datastore-insert-post ((datastore ublog-mongo-datastore) title tags content &key markup published updated)
+(defmethod datastore-insert-post ((datastore microblog-mongo-datastore) title tags content &key markup published updated)
   (let* ((now (local-time:now))
          (id (calc-sha1-sum (format nil "~A~A" title published)))
          (post (make-query datastore
                            "_id" id
                            "title" title
-                           "urlname" (ublog:title-to-urlname title)
+                           "urlname" (microblog:title-to-urlname title)
                            "published" now
                            "updated" now
                            "content" content
@@ -117,18 +117,18 @@
       (mongo:insert-op posts post))
     id))
 
-(defmethod datastore-update-post ((datastore ublog-mongo-datastore) id title tags content &key markup)
+(defmethod datastore-update-post ((datastore microblog-mongo-datastore) id title tags content &key markup)
   (with-posts-collection (posts datastore)
     (let ((post (mongo:find-one posts :query (make-query datastore "_id" id))))
       (setf (gethash "title" post) title
-            (gethash "urlname" post) (ublog:title-to-urlname title)
+            (gethash "urlname" post) (microblog:title-to-urlname title)
             (gethash "content" post) content
             (gethash "tags" post) (coerce tags 'vector)
             (gethash "updated" post) (local-time:now)
             (gethash "markup" post) markup)
       (mongo:update-op posts (son "_id" id) post))))
 
-(defmethod datastore-set-admin ((datastore ublog-mongo-datastore) admin-name admin-password)
+(defmethod datastore-set-admin ((datastore microblog-mongo-datastore) admin-name admin-password)
   (with-mongodb (db datastore)
     (mongo:update-op (mongo:collection db "meta")
                      (make-query datastore "type" "admin")
@@ -138,7 +138,7 @@
                                              "password" (calc-sha1-sum admin-password)))
                      :upsert t)))
 
-(defmethod datastore-check-admin ((datastore ublog-mongo-datastore) admin-name admin-password)
+(defmethod datastore-check-admin ((datastore microblog-mongo-datastore) admin-name admin-password)
   (with-mongodb (db datastore)
     (let ((info (mongo:find-one (mongo:collection db "meta") :query (make-query datastore "type" "admin"))))
       (when info
@@ -174,7 +174,7 @@
                    (gethash "content-rst" post))
              (remhash "content-rst" post))
            (setf (gethash "urlname" post)
-                 (ublog:title-to-urlname (gethash "title" post)))))
+                 (microblog:title-to-urlname (gethash "title" post)))))
     (with-posts-collection (posts datastore)
       (mongo:with-cursor (cursor posts (son))
         (mongo:docursor (post cursor)

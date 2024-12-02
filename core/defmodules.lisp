@@ -1,6 +1,6 @@
 ;;;; defmodule.lisp
 
-(restas:define-module #:ublog
+(restas:define-module #:microblog
   (:use #:cl #:iter)
   (:export #:*disqus-enabled*
            #:*disqus-shortname*
@@ -19,9 +19,9 @@
            #:@admin))
 
 (restas:define-policy #:datastore
-  (:interface-package #:ublog.policy.datastore)
+  (:interface-package #:microblog.policy.datastore)
   (:interface-method-template "DATASTORE-~A")
-  (:internal-package #:ublog.internal.datastore)
+  (:internal-package #:microblog.internal.datastore)
   (:internal-function-template "DS.~A")
   
   (define-method count-posts (&optional tag)
@@ -55,18 +55,18 @@
     "Check for administrator rights"))
 
 (restas:define-policy #:markup
-  (:interface-package #:ublog.policy.markup)
+  (:interface-package #:microblog.policy.markup)
   (:interface-method-template "MARKUP-~A")
-  (:internal-package #:ublog.internal.markup)
+  (:internal-package #:microblog.internal.markup)
   (:internal-function-template "MARKUP.~A")
 
   (define-method render-content (content)
     "Generate HTML from markup"))
 
 (restas:define-policy #:theme
-  (:interface-package #:ublog.policy.theme)
+  (:interface-package #:microblog.policy.theme)
   (:interface-method-template "THEME-~A")
-  (:internal-package #:ublog.internal.theme)
+  (:internal-package #:microblog.internal.theme)
   (:internal-function-template "RENDER.~A")
 
   (define-method list-recent-posts (posts navigation))
@@ -83,18 +83,18 @@
   (define-method admin-edit-post (&key title markup tags preview)))
 
 
-(restas:define-module #:ublog.public
-  (:use #:cl #:iter #:ublog
-        #:ublog.internal.datastore
-        #:ublog.internal.theme
-        #:ublog.internal.markup))
+(restas:define-module #:microblog.public
+  (:use #:cl #:iter #:microblog
+        #:microblog.internal.datastore
+        #:microblog.internal.theme
+        #:microblog.internal.markup))
 
-(restas:define-module #:ublog.admin
-  (:use #:cl #:iter #:ublog
-        #:ublog.internal.datastore
-        #:ublog.internal.theme
-        #:ublog.internal.markup)
+(restas:define-module #:microblog.admin
+  (:use #:cl #:iter #:microblog
+        #:microblog.internal.datastore
+        #:microblog.internal.theme
+        #:microblog.internal.markup)
   (:export #:*post-permalink-route*))
 
-(restas:define-module #:ublog.static
-  (:use #:cl #:iter #:ublog))
+(restas:define-module #:microblog.static
+  (:use #:cl #:iter #:microblog))

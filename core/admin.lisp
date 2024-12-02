@@ -1,6 +1,6 @@
 ;;;; admin.lisp
 
-(in-package #:ublog.admin)
+(in-package #:microblog.admin)
 
 (defparameter *post-permalink-route* nil)
 

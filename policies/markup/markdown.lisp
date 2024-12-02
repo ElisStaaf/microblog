@@ -1,14 +1,14 @@
 ;;;; markdown.lisp
 
-(defpackage #:ublog.markup.markdown
-  (:use #:cl #:ublog.policy.markup)
-  (:export #:ublog-markdown-markup))
+(defpackage #:microblog.markup.markdown
+  (:use #:cl #:microblog.policy.markup)
+  (:export #:microblog-markdown-markup))
 
-(in-package #:ublog.markup.markdown)
+(in-package #:microblog.markup.markdown)
 
-(defclass ublog-markdown-markup () ())
+(defclass microblog-markdown-markup () ())
 
-(defmethod markup-render-content ((markup ublog-markdown-markup) content)
+(defmethod markup-render-content ((markup microblog-markdown-markup) content)
   (with-output-to-string (str)
     (cl-markdown:markdown 
      (reduce (lambda (x y) (concatenate 'string x y))

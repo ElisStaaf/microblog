@@ -1,6 +1,6 @@
 ;;;; convert.lisp
 
-(in-package #:ublog)
+(in-package #:microblog)
 
 (defparameter *xpath-atom-entry*
   "/atom:feed/atom:entry[thr:total and not(app:control/app:draft)]")

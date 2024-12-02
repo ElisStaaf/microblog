@@ -1,6 +1,6 @@
 ;;;; public.lisp
 
-(in-package #:ublog.public)
+(in-package #:microblog.public)
 
 (defmethod data-sift:compile-parse-rule ((rule (eql 'year)) &key)
   (data-sift:compile-parse-rule 'integer))
@@ -15,9 +15,9 @@
 
 (restas:define-route entry ("")
   (:apply-render-method #'render.list-recent-posts)
-  (:additional-variables (skip (ublog::parse-skip-param) 0))
+  (:additional-variables (skip (microblog::parse-skip-param) 0))
   (list (ds.list-recent-posts skip *posts-on-page*)
-        (ublog::navigation (restas:genurl 'entry)
+        (microblog::navigation (restas:genurl 'entry)
                     skip
                     (ds.count-posts))))
 ;;;; one post
@@ -94,14 +94,14 @@
         :content (gethash "content" post)))  
 
 (restas:define-route posts-feed ("feeds/atom" :content-type "application/atom+xml")
-  (:render-method #'ublog.feed.tmpl:atom-feed)
+  (:render-method #'microblog.feed.tmpl:atom-feed)
   (list :name *blog-name*
         :href-atom (restas:genurl* 'posts-feed)
         :href-html (restas:genurl* 'entry)
         :posts (mapcar #'feed-post-info (ds.list-recent-posts 0 50))))
 
 (restas:define-route posts-with-tag-feed ("feeds/atom/tag/:tag" :content-type "application/atom+xml")
-  (:render-method #'ublog.feed.tmpl:atom-feed)
+  (:render-method #'microblog.feed.tmpl:atom-feed)
   (list :name (format nil "~A blog posts with tag \"~A\"" *blog-name* tag)
         :href-atom (restas:genurl* 'posts-feed)
         :href-html (restas:genurl* 'entry)

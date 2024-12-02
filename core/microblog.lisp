@@ -1,6 +1,6 @@
 ;;;; routes.lisp
 
-(in-package #:ublog)
+(in-package #:microblog)
 
 (defparameter *disqus-enabled* nil)
 (defparameter *disqus-shortname* nil)
@@ -45,7 +45,7 @@
 
 (defmethod restas:process-route :before ((route admin-route) bindings)
   (multiple-value-bind (user password) (hunchentoot:authorization)
-    (unless (ublog.internal.datastore:ds.check-admin user password)
+    (unless (microblog.internal.datastore:ds.check-admin user password)
       (hunchentoot:require-authorization *blog-name*))))
 
 (defun @admin (route)
@@ -54,15 +54,15 @@
 
 ;; mount
 
-(restas:mount-module -public- (#:ublog.public)
+(restas:mount-module -public- (#:microblog.public)
   (:inherit-parent-context t))
 
-(restas:mount-module -admin- (#:ublog.admin)
+(restas:mount-module -admin- (#:microblog.admin)
   (:inherit-parent-context t)
   (:url "/admin/")
   (:decorators '@admin)
 
-  (ublog.admin:*post-permalink-route* '-public-.post-permalink))
+  (microblog.admin:*post-permalink-route* '-public-.post-permalink))
 
-(restas:mount-module -static- (#:ublog.static)
+(restas:mount-module -static- (#:microblog.static)
   (:url "/static/"))

@@ -1,6 +1,6 @@
 // -*- closure-template-html -*-
 
-{namespace ublog.theme.mirev.tmpl}
+{namespace microblog.theme.mirev.tmpl}
 
 {template show-blog-post}
     <div class="blog-post">
@@ -34,7 +34,7 @@
 {/template}
 
 {template show-one-post}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $title /}
         {param content}
             {call show-blog-post data="all" /}
@@ -76,7 +76,7 @@
 {/template}
 
 {template show-all-blog-post}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName /}
 
         {param content}

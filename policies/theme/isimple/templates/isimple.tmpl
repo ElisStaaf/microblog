@@ -1,8 +1,8 @@
 // -*- closure-template-html -*-
 
-{namespace ublog.theme.isimple.tmpl}
+{namespace microblog.theme.isimple.tmpl}
 
-{template ublogHtmlPage} 
+{template microblogHtmlPage} 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
  {\n}
     <html xmlns="http://www.w3.org/1999/xhtml">
@@ -96,7 +96,7 @@
     <div id="footer">
         <a id="gotop" href="#" onclick="MGJS.goTop();return false;">Top</a>
         <div id="copyright">
-            Copyright &copy; {$blogAuthor}, Powerd by <a href="https://github.com/archimag/ublog">arblog</a>
+            Copyright &copy; {$blogAuthor}, Powerd by <a href="https://github.com/archimag/microblog">arblog</a>
         </div>
 	    <div id="themeinfo">
 		    Theme by <a href="http://www.neoease.com/">mg12</a>,
@@ -230,7 +230,7 @@
 {/template}
 
 {template showOnePost}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $title /}
         {param content}
             <div id="postpath">
@@ -276,7 +276,7 @@
 {/template}
 
 {template showAllBlogPost}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName /}
 
         {param content}
@@ -435,7 +435,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 {template tagsPage}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName + ': Tags' /}
 
         {param content}
@@ -451,7 +451,7 @@
 {/template}
 
 {template postWithTagPage}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName + ': ' + $tag /}
 
         {param addHead}
@@ -475,7 +475,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 {template archiveForYear}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$year}
         {/param}
@@ -494,7 +494,7 @@
 {/template}
 
 {template archiveForMonth}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$month}, {$year}
         {/param}
@@ -510,7 +510,7 @@
 {/template}
 
 {template archiveForDay}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$day} {$month}, {$year}
         {/param}

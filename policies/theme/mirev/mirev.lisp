@@ -1,20 +1,20 @@
 ;;;; mirev.lisp
 
-(defpackage #:ublog.theme.mirev
-  (:use #:cl #:iter #:ublog.policy.theme)
-  (:export #:ublog-mirev-theme
+(defpackage #:microblog.theme.mirev
+  (:use #:cl #:iter #:microblog.policy.theme)
+  (:export #:microblog-mirev-theme
            #:theme-templates-package))
 
-(in-package #:ublog.theme.mirev)
+(in-package #:microblog.theme.mirev)
 
-(defclass ublog-mirev-theme ()
+(defclass microblog-mirev-theme ()
   ((templates-package :initarg :templates-package
-                      :initform '#:ublog.theme.mirev.tmpl
+                      :initform '#:microblog.theme.mirev.tmpl
                       :reader theme-templates-package)))
 
-(ublog:register-theme-static-dir
+(microblog:register-theme-static-dir
  "mirev"
- (merge-pathnames "static/" (asdf:component-pathname  (asdf:find-system '#:ublog-theme-mirev))))
+ (merge-pathnames "static/" (asdf:component-pathname  (asdf:find-system '#:microblog-theme-mirev))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; theme-render-tagged-data
@@ -22,29 +22,29 @@
 
 (defmacro define-mirev-method (method (&rest args) &body body)
   (alexandria:with-unique-names (tmplname tmplargs theme)
-    `(defmethod ,method ((,theme ublog-mirev-theme)  ,@args)
+    `(defmethod ,method ((,theme microblog-mirev-theme)  ,@args)
        (macrolet ((render-template (,tmplname &body ,tmplargs)
                     `(closure-template:ttable-call-template
                       (closure-template:package-ttable (theme-templates-package ,',theme))
                       (string ',,tmplname)
-                      (list* :blog-name ublog:*blog-name*
+                      (list* :blog-name microblog:*blog-name*
                              ,@,tmplargs))))
          ,@body))))
 
 (defun archive-for-year-link (year)
   (list :title year
-        :href (restas:genurl 'ublog.public::archive-for-year
+        :href (restas:genurl 'microblog.public::archive-for-year
                              :year year)))
 
 (defun archive-for-month-link (year month)
   (list :title (svref local-time:+month-names+ month)
-        :href (restas:genurl 'ublog.public::archive-for-month
+        :href (restas:genurl 'microblog.public::archive-for-month
                              :year year
                              :month (format nil "~2,'0D" month))))
 
 (defun archive-for-day-link (year month day)
   (list :title day
-        :href (restas:genurl 'ublog.public::archive-for-day
+        :href (restas:genurl 'microblog.public::archive-for-day
                              :year year
                              :month (format nil "~2,'0D" month)
                              :day (format nil "~2,'0D" day))))
@@ -56,18 +56,18 @@
          (day (local-time:timestamp-day published)))
     (list :id (gethash "_id" post)
           :title (gethash "title" post)
-          :href (restas:genurl 'ublog.public::one-post
+          :href (restas:genurl 'microblog.public::one-post
                                :year year
                                :month (format nil "~2,'0D" month)
                                :day (format nil "~2,'0D" day)
                                :urlname (gethash "urlname" post))
           :content (gethash "content" post)
           :markup (gethash "markup" post)
-          :all-tags-href (restas:genurl 'ublog.public::all-tags)
+          :all-tags-href (restas:genurl 'microblog.public::all-tags)
           :tags (iter (for tag in (gethash "tags" post))
                       (collect
                           (list :name tag
-                                :href (restas:genurl 'ublog.public::posts-with-tag :tag tag))))
+                                :href (restas:genurl 'microblog.public::posts-with-tag :tag tag))))
           :published (list :year (archive-for-year-link year)
                            :month (archive-for-month-link year month)
                            :day (archive-for-day-link year month day)))))
@@ -76,8 +76,8 @@
 (define-mirev-method theme-list-recent-posts (posts navigation)
   (render-template show-all-blog-post
     (list :posts (mapcar 'prepare-post-data posts)
-          :disqus (list :enabled ublog:*disqus-enabled*
-                        :shortname ublog:*disqus-shortname*)
+          :disqus (list :enabled microblog:*disqus-enabled*
+                        :shortname microblog:*disqus-shortname*)
           :navigation navigation)))
 
 (define-mirev-method theme-archive-for-year (year months)
@@ -102,11 +102,11 @@
 (define-mirev-method theme-one-post (post)
   (let ((id (gethash "_id" post)))
     (render-template show-one-post
-      (list* :disqus (list :shortname ublog:*disqus-shortname*
-                           :developer-mode ublog:*disqus-developer-mode*
-                           :enabled ublog:*disqus-enabled*
+      (list* :disqus (list :shortname microblog:*disqus-shortname*
+                           :developer-mode microblog:*disqus-developer-mode*
+                           :enabled microblog:*disqus-enabled*
                            :identifier id
-                           :permalink (restas:genurl* 'ublog.public::post-permalink :id id))
+                           :permalink (restas:genurl* 'microblog.public::post-permalink :id id))
              (prepare-post-data post)))))
 
 
@@ -116,14 +116,14 @@
   (render-template tags-page
     (list :tags
           (iter (for tag in (sort (copy-list tags) #'string< :key #'string-downcase))
-                (collect (list :href (restas:genurl 'ublog.public::posts-with-tag
+                (collect (list :href (restas:genurl 'microblog.public::posts-with-tag
                                                     :tag tag)
                                :name tag))))))
 
 (define-mirev-method theme-posts-with-tag (tag posts navigation)
   (render-template post-with-tag-page
     (list :tag tag
-          :atom-feed-href (restas:genurl 'ublog.public::posts-with-tag-feed :tag tag)
+          :atom-feed-href (restas:genurl 'microblog.public::posts-with-tag-feed :tag tag)
           :navigation navigation
           :posts (mapcar 'prepare-post-data posts))))
 
@@ -141,10 +141,10 @@
     (list :posts (iter (for post in posts)
                        (collect (list :id (gethash "_id" post)
                                       :title (gethash "title" post)
-                                      :href (restas:genurl 'ublog.admin::edit-post :id (gethash "_id" post))
+                                      :href (restas:genurl 'microblog.admin::edit-post :id (gethash "_id" post))
                                       :published (render-published (gethash "published" post)))))
           :navigation navigation
-          :create-post-href (restas:genurl 'ublog.admin::create-post))))
+          :create-post-href (restas:genurl 'microblog.admin::create-post))))
 
 (define-mirev-method theme-admin-edit-post (&key title markup tags preview)
   (render-template admin-edit-post-page

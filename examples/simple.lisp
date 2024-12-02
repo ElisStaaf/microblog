@@ -1,29 +1,29 @@
 ;;;; simple.lisp
 
-(asdf:operate 'asdf:load-op '#:ublog)
-(asdf:operate 'asdf:load-op '#:ublog-systems)
+(asdf:operate 'asdf:load-op '#:microblog)
+(asdf:operate 'asdf:load-op '#:microblog-systems)
 
-(asdf:operate 'asdf:load-op '#:ublog-datastore-mongodb)
+(asdf:operate 'asdf:load-op '#:microblog-datastore-mongodb)
 
-(asdf:operate 'asdf:load-op '#:ublog-markup-rst)
-;; (asdf:operate 'asdf:load-op '#:ublog-markup-markdown)
+(asdf:operate 'asdf:load-op '#:microblog-markup-rst)
+;; (asdf:operate 'asdf:load-op '#:microblog-markup-markdown)
 
-(asdf:operate 'asdf:load-op '#:ublog-theme-mirev)
+(asdf:operate 'asdf:load-op '#:microblog-theme-mirev)
 
 (restas:define-module #:myblog
   (:use #:cl))
 
 (in-package #:myblog)
 
-(restas:mount-module -ublog- (#:ublog)
-  (ublog:*blog-name* "My blog")
-  (ublog:*posts-on-page* 10)
+(restas:mount-module -microblog- (#:microblog)
+  (microblog:*blog-name* "My blog")
+  (microblog:*posts-on-page* 10)
   
-  (ublog.internal.datastore:*datastore* (make-instance 'ublog.datastore.mongodb:ublog-mongo-datastore))
-  (ublog.internal.markup:*markup* (make-instance 'ublog.markup.rst:ublog-rst-markup))
-  ;;(ublog.policy.markup:*markup* (make-instance 'ublog.markup.markdown:ublog-markdown-markup))
-  (ublog.internal.theme:*theme* (make-instance 'ublog.theme.mirev:ublog-mirev-theme))
+  (microblog.internal.datastore:*datastore* (make-instance 'microblog.datastore.mongodb:microblog-mongo-datastore))
+  (microblog.internal.markup:*markup* (make-instance 'microblog.markup.rst:microblog-rst-markup))
+  ;;(microblog.policy.markup:*markup* (make-instance 'microblog.markup.markdown:microblog-markdown-markup))
+  (microblog.internal.theme:*theme* (make-instance 'microblog.theme.mirev:microblog-mirev-theme))
   
-  (ublog:*disqus-enabled* nil))
+  (microblog:*disqus-enabled* nil))
 
 (restas:start '#:myblog :port 8080)

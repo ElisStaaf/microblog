@@ -1,9 +1,9 @@
 // -*- closure-template-html -*-
 
-{namespace ublog.theme.mirev.tmpl}
+{namespace microblog.theme.mirev.tmpl}
 
 {template archiveForYear}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$year}
         {/param}
@@ -22,7 +22,7 @@
 {/template}
 
 {template archiveForMonth}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$month}, {$year}
         {/param}
@@ -38,7 +38,7 @@
 {/template}
 
 {template archiveForDay}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title}
             {nil}{$blogName}: {$day} {$month}, {$year}
         {/param}

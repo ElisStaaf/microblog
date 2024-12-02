@@ -1,11 +1,11 @@
 ;;;; rst.lisp
 
-(defpackage #:ublog.markup.rst
-  (:use #:cl #:iter #:ublog.policy.markup)
+(defpackage #:microblog.markup.rst
+  (:use #:cl #:iter #:microblog.policy.markup)
   (:import-from #:docutils.parser.rst #:&option #:&content #:&content-parser)
-  (:export #:ublog-rst-markup))
+  (:export #:microblog-rst-markup))
 
-(in-package #:ublog.markup.rst)
+(in-package #:microblog.markup.rst)
 
 
 (defvar *interpreted-roles*
@@ -14,7 +14,7 @@
 (defvar *directives*
   (alexandria:copy-hash-table docutils.parser.rst::*directives*))
 
-(defmacro with-ublog-markup (&body body)
+(defmacro with-microblog-markup (&body body)
   `(let ((docutils.parser.rst::*interpreted-roles* *interpreted-roles*)
          (docutils.parser.rst::*directives* *directives*))
      ,@body))
@@ -33,7 +33,7 @@
    (hyperspec-ref-spec node)
    "</a>"))
 
-(with-ublog-markup
+(with-microblog-markup
   (docutils.parser.rst:def-role hs (spec)
     (make-instance 'hyperspec-ref
                    :spec spec)))
@@ -51,7 +51,7 @@
    (cliki-ref-spec node)
    "</a>"))
 
-(with-ublog-markup
+(with-microblog-markup
   (docutils.parser.rst:def-role cliki (spec)
     (make-instance 'cliki-ref
                    :spec spec)))
@@ -139,7 +139,7 @@
         ;;---------------------------------------
         (docutils:part-append "</ol>" "</div>")))))
 
-(with-ublog-markup 
+(with-microblog-markup 
   (docutils.parser.rst:def-directive code-block (parent lang &content content)
     (let ((node (docutils:make-node 'docutils.nodes:paragraph)))
       (docutils:add-child node
@@ -148,12 +148,12 @@
                                          :code (docutils::join-strings content #\Newline)))
       (docutils:add-child parent node))))
 
-;;; ublog-rst-markup
+;;; microblog-rst-markup
 
-(defclass ublog-rst-markup () ())
+(defclass microblog-rst-markup () ())
 
-(defmethod markup-render-content ((markup ublog-rst-markup) content)
-  (with-ublog-markup 
+(defmethod markup-render-content ((markup microblog-rst-markup) content)
+  (with-microblog-markup 
     (let ((doc (docutils:read-rst content))
           (writer (make-instance 'docutils.writer.html:html-writer)))
       (docutils:visit-node writer doc)

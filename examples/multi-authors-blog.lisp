@@ -1,14 +1,14 @@
 ;;;; demo.lisp
 
-(asdf:operate 'asdf:load-op '#:ublog)
-(asdf:operate 'asdf:load-op '#:ublog-systems)
+(asdf:operate 'asdf:load-op '#:microblog)
+(asdf:operate 'asdf:load-op '#:microblog-systems)
 
-(asdf:operate 'asdf:load-op '#:ublog-datastore-mongodb)
+(asdf:operate 'asdf:load-op '#:microblog-datastore-mongodb)
 
-(asdf:operate 'asdf:load-op '#:ublog-markup-rst)
-;; (asdf:operate 'asdf:load-op '#:ublog-markup-markdown)
+(asdf:operate 'asdf:load-op '#:microblog-markup-rst)
+;; (asdf:operate 'asdf:load-op '#:microblog-markup-markdown)
 
-(asdf:operate 'asdf:load-op '#:ublog-theme-mirev)
+(asdf:operate 'asdf:load-op '#:microblog-theme-mirev)
 
 (restas:define-module #:my-multi-authors-blog
   (:use #:cl))
@@ -17,12 +17,12 @@
 
 ;;;; datastore
 
-(defclass multi-authors-datastore (ublog.datastore.mongodb:arblog-mongo-datastore)
+(defclass multi-authors-datastore (microblog.datastore.mongodb:arblog-mongo-datastore)
   ((author :initarg :author :reader blog-author))
   (:default-initargs
    :dbspec '(:name "multi-authors-blog")))
 
-(defmethod ublog.datastore.mongodb:make-query ((datastore multi-authors-datastore) &rest args)
+(defmethod microblog.datastore.mongodb:make-query ((datastore multi-authors-datastore) &rest args)
   (declare (ignore args))
   (let ((query (call-next-method)))
     (setf (gethash "author" query)
@@ -30,7 +30,7 @@
     query))
 
 (defun add-author (author password)
-  (ublog.policy.datastore:datastore-set-admin
+  (microblog.policy.datastore:datastore-set-admin
    (make-instance 'multi-authors-datastore :author author)
    author
    password))
@@ -42,48 +42,48 @@
 
 (defun author-settings (author)
   (restas:make-context
-   `((ublog:*blog-name* . ,author)
-     (ublog.internal.datastore:*datastore* . ,(make-instance 'multi-authors-datastore :author author))
-     (ublog.internal.markup:*markup* . ,(make-instance 'arblog.markup.rst:arblog-rst-markup))
-     (ublog.internal.theme:*theme* . ,(make-instance 'arblog.theme.mirev:arblog-mirev-theme)))))
+   `((microblog:*blog-name* . ,author)
+     (microblog.internal.datastore:*datastore* . ,(make-instance 'multi-authors-datastore :author author))
+     (microblog.internal.markup:*markup* . ,(make-instance 'arblog.markup.rst:arblog-rst-markup))
+     (microblog.internal.theme:*theme* . ,(make-instance 'arblog.theme.mirev:arblog-mirev-theme)))))
 
-;;;; multi-authors-ublog-route
+;;;; multi-authors-microblog-route
 
-(defclass multi-authors-ublog-route (routes:proxy-route) ())
+(defclass multi-authors-microblog-route (routes:proxy-route) ())
 
 (defun @multi-authors (route)
-  (make-instance 'multi-authors-ublog-route :target route))
+  (make-instance 'multi-authors-microblog-route :target route))
 
-(defmethod routes:route-template ((route multi-authors-ublog-route))
+(defmethod routes:route-template ((route multi-authors-microblog-route))
   (append (routes:parse-template ":author")
           (call-next-method)))
 
-(defmethod restas:process-route :around ((route multi-authors-ublog-route) bindings)
+(defmethod restas:process-route :around ((route multi-authors-microblog-route) bindings)
   (let ((author (cdr (assoc :author bindings :test #'string=))))
     (restas:with-context (author-settings author)
       (call-next-method))))
 
-(defmethod routes:route-check-conditions ((route multi-authors-ublog-route) bindings)
+(defmethod routes:route-check-conditions ((route multi-authors-microblog-route) bindings)
   (let ((author (cdr (assoc :author bindings :test #'string=))))
     (restas:with-context (author-settings author)
       (call-next-method))))
   
 
-(defmethod restas:make-route-url ((route multi-authors-ublog-route) bindings)
+(defmethod restas:make-route-url ((route multi-authors-microblog-route) bindings)
   (restas:make-route-url (routes:route-template route)
-                         (list* :author (blog-author ublog.internal.datastore:*datastore*)
+                         (list* :author (blog-author microblog.internal.datastore:*datastore*)
                                 bindings)))
 
 ;;;; mount modules
 
-(restas:mount-module -public- (#:ublog.public)
+(restas:mount-module -public- (#:microblog.public)
   (:decorators '@multi-authors))
 
-(restas:mount-module -admin- (#:ublog.admin)
+(restas:mount-module -admin- (#:microblog.admin)
   (:url "/admin/")
-  (:decorators '@multi-authors 'ublog:@admin))
+  (:decorators '@multi-authors 'microblog:@admin))
 
-(restas:mount-module -static- (#:ublog.static)
+(restas:mount-module -static- (#:microblog.static)
   (:url "/static/"))
 
 ;;;; start

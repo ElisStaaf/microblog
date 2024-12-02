@@ -1,13 +1,13 @@
 ;;;; static.lisp
 
-(in-package #:ublog.static)
+(in-package #:microblog.static)
 
 (defun parse-native-namestring (thing)
   #+sbcl (sb-ext:parse-native-namestring thing)
   #-sbcl (parse-namestring thing))
 
 (restas:define-route theme-static-file ("/:theme/*path")
-  (let* ((theme-path (gethash theme ublog::*theme-static-dir-map*))
+  (let* ((theme-path (gethash theme microblog::*theme-static-dir-map*))
          (relative-path (parse-native-namestring (format nil "~{~A~^/~}" path)))
          (file (merge-pathnames relative-path theme-path)))
     (when (find :up (pathname-directory relative-path))

@@ -1,9 +1,9 @@
 // -*- closure-template-html -*-
 
-{namespace ublog.theme.mirev.tmpl}
+{namespace microblog.theme.mirev.tmpl}
 
 {template tagsPage}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName + ': Tags' /}
 
         {param content}
@@ -19,7 +19,7 @@
 {/template}
 
 {template postWithTagPage}
-    {call ublogHtmlPage data="all"}
+    {call microblogHtmlPage data="all"}
         {param title: $blogName + ': ' + $tag /}
 
         {param addHead}
